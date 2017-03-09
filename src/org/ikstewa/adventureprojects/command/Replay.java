@@ -4,13 +4,10 @@ import org.ikstewa.adventureprojects.Printer;
 import org.ikstewa.adventureprojects.StateManager;
 import org.ikstewa.adventureprojects.command.operations.Operation;
 
-import java.util.ArrayDeque;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.Deque;
 
 /**
- * Replays the last specified number of commands showing how the state was
- * previously modified.
+ * Replays the last specified number of commands on to the current state.
  */
 public class Replay implements Command {
 
@@ -27,20 +24,13 @@ public class Replay implements Command {
 
     @Override
     public String execute() {
-        final Stack<Operation> replayHistory = new Stack<>();
 
-        // Undo the operations from the current state
-        for (int i = 1; i <= count; i++) {
-            Optional<Operation> lastCommand = this.stateManager.undoOperation();
-            if (lastCommand.isPresent()) {
-                replayHistory.push(lastCommand.get());
-            }
-        }
+        final Deque<Operation> replayHistory = this.stateManager.getOperationHistory(this.count);
 
         // Replay all the removed operations
         final StringBuilder outputBuilder = new StringBuilder();
-        while (!replayHistory.empty()) {
-            final Operation op = replayHistory.pop();
+        while (!replayHistory.isEmpty()) {
+            final Operation op = replayHistory.removeLast();
             this.stateManager.applyOperation(op);
 
             outputBuilder.append(String.format("> %s%n", op));

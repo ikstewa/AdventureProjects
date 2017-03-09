@@ -4,7 +4,9 @@ import org.ikstewa.adventureprojects.command.operations.Operation;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * StateManager is responsible for providing the latest state of the stacks,
@@ -42,6 +44,21 @@ public class StateManager {
     public Optional<Operation> undoOperation() {
         return Optional.ofNullable(this.stateHistory.pollFirst())
                 .map(StateNode::getAppliedOperation);
+    }
+
+    /**
+     * Returns a history of applied operations.
+     * @param count the number of operations to return
+     * @return a Deque of operations; latest applied at the head
+     */
+    public Deque<Operation> getOperationHistory(final int count) {
+        List<Operation> opList =
+                this.stateHistory
+                        .stream()
+                        .limit(count)
+                        .map(StateNode::getAppliedOperation)
+                        .collect(Collectors.toList());
+        return new ArrayDeque<>(opList);
     }
 
     private static class StateNode {

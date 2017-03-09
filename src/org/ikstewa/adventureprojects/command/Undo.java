@@ -4,8 +4,6 @@ import org.ikstewa.adventureprojects.Printer;
 import org.ikstewa.adventureprojects.StateManager;
 import org.ikstewa.adventureprojects.command.operations.Operation;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Optional;
 
 /**
